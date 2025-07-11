@@ -1,43 +1,41 @@
-"use client";
-import { useEffect, useState } from 'react';
+export async function fetchPhotos(sol: any, apiKey = 'XXcgVHftCESiXWu3I6skkAEQsNmfSFPOtXCDeH78') {
+   const url = `https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?sol=${sol}&page=2&api_key=${apiKey}`;
+    const res = await fetch(url);
+    try{
+        if (!res.ok) {
+            throw new Error(`Failed to fetch photos. HTTP error ${res.status}`);
+        }
+        const data = await res.json();
+        return data.photos;
+    }catch(error){
+        console.error("error during fetch: ", error);
+        throw error;
+    }
 
-interface Photo {
-    id: number;
-    sol: number;
-    earth_date: string;
-    title: string;
-    img_src: string;
-    rover: {
-        launch_date: string;
-        landing_date: string;
-    };
 }
 
-export default function Photos() {
-    const [photos, setPhotos] = useState<Photo[]>([]);
-
-    useEffect(() => {
-        async function fetchData() {
-            const response = await fetch('https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?sol=1000&page=2&api_key=XXcgVHftCESiXWu3I6skkAEQsNmfSFPOtXCDeH78');
-            const data = await response.json();
-            setPhotos(data.photos);
-        }
-        console.log(photos);
-        fetchData();
-    }, []);
+export default function Photos({photos}:any) {
+    if (photos.length === 0) {
+        return <p>No photos found.</p>;
+    }
 
     return (
-        <ul>
-            {photos.map((photo) => (
+        <div>
+            {photos.map((photo:any) => (
                 <div key={photo.id}>
                     <img src={photo.img_src} width="400" />
-                    <li><strong>ID:</strong> {photo.id}</li>
-                    <li><strong>SOL (zi marțiană):</strong> {photo.sol}</li>
-                    <li><strong>Data pe Pământ:</strong> {photo.earth_date}</li>
-                    <li><strong>Lansat:</strong> {photo.rover.launch_date}</li>
-                    <li><strong>Aterizat:</strong> {photo.rover.landing_date}</li>
+                    <ul>
+                        <li><strong>ID:</strong> {photo.id}</li>
+                        <li><strong>SOL:</strong> {photo.sol}</li>
+                        <li><strong>Earth Date:</strong> {photo.earth_date}</li>
+                        <li><strong>Camera:</strong> {photo.camera.full_name} ({photo.camera.name})</li>
+                        <li><strong>Rover:</strong> {photo.rover.name}</li>
+                        <li><strong>Status:</strong> {photo.rover.status}</li>
+                        <li><strong>Launch:</strong> {photo.rover.launch_date}</li>
+                        <li><strong>Landing:</strong> {photo.rover.landing_date}</li>
+                    </ul>
                 </div>
             ))}
-        </ul>
+        </div>
     );
 }
