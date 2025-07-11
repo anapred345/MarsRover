@@ -1,8 +1,10 @@
 "use client";
 import { useState } from 'react';
 import styles from "./form.module.css";
+import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
 
-export default function UserInputForm({onSearch }:any) {
+export default function UserInputForm({onSearch}:any) {
     const [sol_number, set_sol_number] = useState('1000');
 
     const handleInputChange = (event: any) => {
@@ -17,14 +19,15 @@ export default function UserInputForm({onSearch }:any) {
 
     return (
         <div>
-            <h3>Enter Sol</h3>
                 <form onSubmit={handleSubmit}>
-                    <input className={styles.text}
-                        type="text"
-                        value={sol_number}
-                        onChange={handleInputChange}
-                        placeholder="Type...."
-                    />
+                        <TextField
+                            id="outlined-basic"
+                            label="Enter Sol"
+                            variant="outlined"
+                            value={sol_number}
+                            onChange={handleInputChange}
+                           type="text"
+                        />
                     <button className={styles.submit} type="submit">Submit</button>
                 </form>
         </div>
