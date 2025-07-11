@@ -1,22 +1,23 @@
 "use client";
 
-import { useState, useEffect } from 'react';
-import styles from "./page.module.css";
-import Photos from "./photos"
-import UserInputForm from "./action"
+import { useState } from 'react';
+import UserInputForm from './action';
+import Photos from './photos';
+import {Photo} from './photos';
 import { fetchPhotos } from './photos';
+import styles from "@/app/page.module.css";
 
 export default function Home() {
-    const [photos, setPhotos] = useState([]);
+    const [photos, setPhotos] = useState<Photo[]>([]);
     const [loading, setLoading] = useState(false);
 
-    const handleSearch = async (sol: any) => {
+    const handleSearch = async (sol: string) => {
         setLoading(true);
         try {
             const fetchedPhotos = await fetchPhotos(sol);
             setPhotos(fetchedPhotos);
-        } catch (err) {
-            console.error('Error fetching photos:', err);
+        } catch (error) {
+            console.error("Error fetching photos:", error);
             setPhotos([]);
         } finally {
             setLoading(false);
@@ -24,15 +25,21 @@ export default function Home() {
     };
 
     return (
-        <div className={styles.page}>
-            <h1>Mars Rover Image Explorer</h1>
-            <UserInputForm onSearch={handleSearch} />
-            {loading ? <p>Loading photos...</p> : <Photos photos={photos} />}
-        </div>
+        <main  className={styles.page}>
+            <h1>Mars Rover Explorer</h1>
+
+            <section className={styles.form}>
+                <UserInputForm onSearch={handleSearch} />
+            </section>
+
+            <section style={{
+                width: '100%',
+                maxWidth: '1200px'
+            }}>
+                {loading
+                    ? <p>Loading photos...</p>
+                    : <Photos photos={photos} />}
+            </section>
+        </main>
     );
 }
-
-
-
-
-

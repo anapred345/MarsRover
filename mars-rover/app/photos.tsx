@@ -1,3 +1,17 @@
+import styles from "@/app/page.module.css";
+
+export interface Photo{
+    img_src: string;
+    id: string;
+    sol: string;
+    earth_date: string;
+    camera:{
+        full_name: string;
+    }
+    rover:{
+        name: string;
+    }
+}
 export async function fetchPhotos(sol: any, apiKey = 'XXcgVHftCESiXWu3I6skkAEQsNmfSFPOtXCDeH78') {
    const url = `https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?sol=${sol}&page=2&api_key=${apiKey}`;
     const res = await fetch(url);
@@ -20,19 +34,22 @@ export default function Photos({photos}:any) {
     }
 
     return (
-        <div>
-            {photos.map((photo:any) => (
-                <div key={photo.id}>
-                    <img src={photo.img_src} width="400" />
-                    <ul>
-                        <li><strong>ID:</strong> {photo.id}</li>
+        <div style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            justifyContent: 'center',
+            gap: '20px'
+        }}>
+            {photos.slice(0, 20).map((photo: Photo) => (
+                <div key={photo.id} className={styles.container}>
+
+                    <img src={photo.img_src} width="100%" className={styles.image} />
+                    <ul className={styles.no_bullets}>
+                        <li> <strong>ID:</strong> {photo.id}</li>
                         <li><strong>SOL:</strong> {photo.sol}</li>
                         <li><strong>Earth Date:</strong> {photo.earth_date}</li>
-                        <li><strong>Camera:</strong> {photo.camera.full_name} ({photo.camera.name})</li>
+                        <li><strong>Camera:</strong> {photo.camera.full_name}</li>
                         <li><strong>Rover:</strong> {photo.rover.name}</li>
-                        <li><strong>Status:</strong> {photo.rover.status}</li>
-                        <li><strong>Launch:</strong> {photo.rover.launch_date}</li>
-                        <li><strong>Landing:</strong> {photo.rover.landing_date}</li>
                     </ul>
                 </div>
             ))}
